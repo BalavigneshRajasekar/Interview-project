@@ -1,0 +1,15 @@
+h1 {
+  font-size: 48px !important;
+}
+
+h2 {
+  font-size: 30px !important;
+}
+
+h3 {
+  font-size: 20px !important;
+}
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
