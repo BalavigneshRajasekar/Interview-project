@@ -1,6 +1,6 @@
 
 
-import { Button } from 'flowbite-react'
+
 import './App.css'
 
 function App() {
@@ -14,9 +14,8 @@ function App() {
 
   return (
     <>
-      <h1 className='bg-red-200 '>Interview Task</h1>
-      <Button color='yellow'>hello</Button>
-
+      <h1 className='bg-red-200'>Interview Task</h1>
+      
        
 
        
