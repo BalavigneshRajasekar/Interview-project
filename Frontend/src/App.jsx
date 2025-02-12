@@ -2,6 +2,7 @@
 
 
 import './App.css'
+import Payment from './Payment'
 
 function App() {
 
@@ -14,8 +15,9 @@ function App() {
 
   return (
     <>
-      <h1 className='bg-red-200'>Interview Task</h1>
-      
+     
+      <h1>payment</h1>
+      <Payment></Payment>
        
 
        

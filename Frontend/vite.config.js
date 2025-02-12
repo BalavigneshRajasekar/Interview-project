@@ -8,6 +8,6 @@ import  {Flowbite}  from 'flowbite-react'
 export default defineConfig({
   plugins: [react() ,
     tailwindcss(),
-    Flowbite(),
+   
   ],
 })
