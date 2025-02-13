@@ -6,33 +6,20 @@ const app = express()
 
 //dummy workers
 const workers = [
-    {
-      name: "Work 1",
-      job: [
-        { _id: new mongoose.Types.ObjectId(), data:{},Type: "activeTask", status: "active", time: new Date() },
-        { _id: new mongoose.Types.ObjectId(), data :{},Type:"completedTask", status: "completed", time: new Date() },
-        { _id: new mongoose.Types.ObjectId(), data :{},Type:"failed task", status: "failed", time: new Date()},
-        { _id: new mongoose.Types.ObjectId(), data :{},Type:"Waiting Task", status: "waiting", time: new Date()}
-      ]
-    },
-    {
-      name: "Work 2",
-      job: [
-        { _id: new mongoose.Types.ObjectId(), data:{} ,Type:"waitingTask", status: "waiting", time: new Date() },
-        { _id: new mongoose.Types.ObjectId(), data :{},Type:"completedTask", status: "completed", time: new Date() }
-      ]
-    },
-    {
-      name: "Work 3",
-      job: [
-        { _id: new mongoose.Types.ObjectId(), data:{},Type:"completedTask", status: "completed", time: new Date() },
-        { _id: new mongoose.Types.ObjectId(), data :{},Type:"completedTask", status: "completed", time: new Date() }
-      ]
-    },
+    
+      {data:{nams:"transactions",},Type: "Transaction", status: "active", time:Date.now() },
+      {data:{nams:"money",},Type: "Transaction", status: "completed", time:Date.now() },
+      {data:{nams:"outstanding",},Type: "Transaction", status: "failed", time:Date.now() },
+      {data:{nams:"pending amount",},Type: "Transaction", time:Date.now() },
+      {data:{nams:"profit amount",},Type: "Transaction",  time:Date.now() },
+      {data:{nams:"loss amount",},Type: "Transaction",  time:Date.now() },
+      {data:{nams:"tax amount",},Type: "Transaction", status: "active", time:Date.now() },
+      {data:{nams:"invest",},Type: "Transaction", status: "active", time:Date.now() },
+   
    
   ];
 
-// API to create a worker with jobs
+// API to create a task in Doers collection
 app.post("/add-worker/:collectionName", async (req, res) => {
     try {
       const { collectionName } = req.params;
@@ -50,23 +37,20 @@ app.post("/add-worker/:collectionName", async (req, res) => {
   });
 
   
-  // API to get all workers from a specific collection
-app.get("/get-workers/:collectionName", async (req, res) => {
+  // API to get status count from specific collection
+app.get("/get-statusCounts/:collectionName", async (req, res) => {
+     const { collectionName } = req.params
     // const { page, limit } = req.query;
     try {
-      const { collectionName } = req.params;
+     
       const WorkerModel = createWorkerModel(collectionName);
+      const statusCounts = await WorkerModel.aggregate([
+        { $group: { _id: "$status", count: { $sum: 1 } } },
+        { $sort: { count: -1 } }
+      ]);
   
-      const workers = await WorkerModel.find()
-    //   .skip((page - 1) * limit) // Skip previous pages
-    //   .limit(parseInt(limit)); 
-
-      const totalWorkers = await WorkerModel.countDocuments(); 
-      res.status(200).json({ 
-
-        // currentPage: parseInt(page),
-        // totalPages: Math.ceil(totalWorkers / limit),
-        workers, });
+      res.json({ statusCounts });
+    
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -98,14 +82,8 @@ app.get("/get-jobs/:collectionName", async (req, res) => {
       const WorkerModel = createWorkerModel(collectionName);
   
       const jobs = await WorkerModel.aggregate([
-        { $unwind: "$job" }, // Flatten the job array
-        { $match: { "job.status": status } }, // Match only jobs with the requested status
-        { 
-          $project: { 
-            _id: 0, 
-            job: 1 
-          } 
-        } // Only return the job field
+        { $match: { status: status } }, // Match only jobs with the requested status
+       
       ]);
   
       res.status(200).json({ jobs: jobs.map(j => j.job) }); // Return job array

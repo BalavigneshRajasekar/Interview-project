@@ -6,18 +6,15 @@ const createWorkerModel = (collectionName) => {
         return mongoose.models[collectionName]; // Return existing model
       }
   const JobSchema = new mongoose.Schema({
-    data:{type:Object},
+    data:{type:Object, required:true},
     Type: { type: String, required: true },
     status: { type: String, enum: ["waiting", "active", "completed" ,"failed","delayed"], default: "waiting" },
     runAt: { type: Date, default: Date.now }
-  });
+  },{ collection: collectionName });
 
-  const WorkerSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    job: { type: [JobSchema], required: true }
-  }, { collection: collectionName });
+  
 
-  return mongoose.model(collectionName, WorkerSchema);
+  return mongoose.model(collectionName, JobSchema);
 };
 
 module.exports = createWorkerModel;
