@@ -1,6 +1,6 @@
 const express = require('express')
 const createWorkerModel = require('../models/DynamicWorker')
-
+ const config = require('../config.json')
 const mongoose = require('mongoose')
 const app = express()
 
@@ -55,6 +55,17 @@ app.get("/get-statusCounts/:collectionName", async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
+
+  // API to serve Collection name to front end for further process
+  app.get("/get-collections", async (req, res) => {
+    try {
+      const collections = config.Collections
+      res.json(collections);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
 
   // API to get particular workers form particular collection
   app.get("/get-worker/:collectionName/:workerId", async (req, res) => {
