@@ -1,55 +1,57 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import axios from "axios";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
-export const AppContext = createContext()
+export const AppContext = createContext();
 
+const AppHandler = ({ children }) => {
+  const [Collections, setCollections] = useState([]);
+  const [emptyData, setEmptyData] = useState(false);
+  const [status, setStatus] = useState([]);
 
-const AppHandler =({children})=>{
-    const [selectedCollection, setSelectedCollection] = useState("DoerQueue");
-    const [filter,setFilter]=useState([])
-    const [job,setJob]=useState([])
-    
-    const[workers,setWorkers]=useState([])
-
-  // Fetching workers data from the API using axios
-    const fetchWorkers = async()=>{
-        try{
-            const response = await axios.get(`http://localhost:3000/api/w1/get-workers/${selectedCollection}`)
-            setWorkers(response.data.workers)
-
-        }catch(e){
-console.log(e);
-
-        }  
+  useEffect(() => {
+    fetchCollections();
+  }, []);
+  //Get Collection names From Backend to proceed Further
+  const fetchCollections = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/api/w1/get-collections"
+      );
+      setCollections(response.data);
+    } catch (error) {
+      console.error(error);
     }
-    // Fetching particular worker job data from the API using axios
- const fetchWorkerJob=async(id)=>{
-        
-        try{
-   const response= await axios.get(`http://localhost:3000/api/w1/get-worker/${selectedCollection}/${id}`)
-  setJob(response.data.worker.job)
-  setFilter(response.data.worker.job)
-  console.log(response.data.worker.job);
-  
-        }catch(e){
-            console.log(e);
-            
-        }
+  };
+  // Get all status by Count
+  const fetchStatuses = async (collectionName) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/w1/get-statusCounts/${collectionName}`
+      );
+      if (response.data.statusCounts.length == 0) {
+        //Check We got an empty array or what
+        setEmptyData(true);
+      }
+      setStatus(response.data.statusCounts);
+    } catch (error) {
+      console.error(error);
     }
-
-return(
-    <AppContext.Provider value={{selectedCollection,
-    setSelectedCollection,
-    workers,setWorkers,
-    fetchWorkers,
-    fetchWorkerJob
-    ,job,setFilter,filter}}>
-    {children}
+  };
+  return (
+    <AppContext.Provider
+      value={{
+        Collections,
+        fetchStatuses,
+        setEmptyData,
+        status,
+        emptyData,
+      }}
+    >
+      {children}
     </AppContext.Provider>
- 
-)
-}
+  );
+};
 
 export default AppHandler;

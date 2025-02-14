@@ -1,28 +1,25 @@
-
 /* eslint-disable no-unused-vars */
-import React from 'react'
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from './components/Home';
-import AppHandler from './context/AppContext';
-import Workers from './components/Workers';
-import JobStatus from './components/JobStatus';
-
+import Home from "./components/Home";
+import AppHandler from "./context/AppContext";
+import QueueStatus from "./components/QueueStatus";
 
 function App() {
-
   return (
-    <>   
-    <AppHandler>
-    <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<Home/>}> </Route>
-      <Route path='/workers' element={<Workers/>}></Route>
-      <Route path='/jobStatus/:id' element={<JobStatus/>}></Route>
-    </Routes>
-    </BrowserRouter>
-    </AppHandler>   
+    <>
+      <AppHandler>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />}>
+              {" "}
+            </Route>
+            <Route path="/:collections" element={<QueueStatus />}></Route>
+          </Routes>
+        </BrowserRouter>
+      </AppHandler>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
