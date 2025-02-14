@@ -20,6 +20,9 @@ function QueueStatus() {
       setEmptyData(false);
     };
   }, []);
+  const handleChange = (id) => {
+    navigate(`/${collections}/${id}`); // Navigate to workers page with selected status
+  };
   return (
     <div>
       <h1 className="text-center bg-green-600">{collections}</h1>
@@ -33,10 +36,14 @@ function QueueStatus() {
           {status.length > 0 ? (
             <div className="flex h-100 justify-center items-center gap-10 border p-5 rounded-3xl mt-4 flex-wrap">
               {status.map((stat, i) => (
-                <Badge key={i} count={stat.count}>
+                <Badge
+                  key={i}
+                  count={stat.count}
+                  className="active:scale-90 transition 1s ease-in-out"
+                >
                   <button
-                    className="p-3 bg-blue-400 rounded font-bold"
-                    onClick={() => console.log(stat)}
+                    className=" bg-blue-400 rounded font-bold p-10"
+                    onClick={() => handleChange(stat._id)} //contains particular status
                   >
                     {stat._id}
                   </button>

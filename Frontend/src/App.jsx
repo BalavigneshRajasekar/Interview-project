@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import AppHandler from "./context/AppContext";
 import QueueStatus from "./components/QueueStatus";
+import IndividualStatus from "./components/IndividualStatus";
 
 function App() {
   return (
@@ -15,6 +16,10 @@ function App() {
               {" "}
             </Route>
             <Route path="/:collections" element={<QueueStatus />}></Route>
+            <Route
+              path="/:collections/:status"
+              element={<IndividualStatus />}
+            ></Route>
           </Routes>
         </BrowserRouter>
       </AppHandler>

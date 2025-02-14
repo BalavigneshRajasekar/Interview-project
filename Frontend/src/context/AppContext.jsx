@@ -6,9 +6,10 @@ import { createContext, useEffect, useState } from "react";
 export const AppContext = createContext();
 
 const AppHandler = ({ children }) => {
-  const [Collections, setCollections] = useState([]);
-  const [emptyData, setEmptyData] = useState(false);
-  const [status, setStatus] = useState([]);
+  const [Collections, setCollections] = useState([]); //contains all the collections
+  const [emptyData, setEmptyData] = useState(false); // if the collection is empty
+  const [status, setStatus] = useState([]); // status name and the count
+  const [statusData, setStatusData] = useState([]); // particular status data
 
   useEffect(() => {
     fetchCollections();
@@ -39,6 +40,24 @@ const AppHandler = ({ children }) => {
       console.error(error);
     }
   };
+
+  // Get data based on status
+  const fetchDataByStatus = async (collections, statusName) => {
+    console.log(statusName, collections);
+
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/w1/get-jobs/${collections}`,
+        {
+          params: { statusName },
+        }
+      );
+      console.log(response);
+      setStatusData(response.data.jobs);
+    } catch (e) {
+      console.error("Failed to fetch data", e);
+    }
+  };
   return (
     <AppContext.Provider
       value={{
@@ -47,6 +66,8 @@ const AppHandler = ({ children }) => {
         setEmptyData,
         status,
         emptyData,
+        fetchDataByStatus,
+        statusData,
       }}
     >
       {children}
