@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext, useEffect, useState } from "react";
-import { Button } from "antd";
+import React, { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router";
 function Home() {

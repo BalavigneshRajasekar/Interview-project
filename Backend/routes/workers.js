@@ -45,11 +45,22 @@ const workers = [
 app.post("/add-worker/:collectionName", async (req, res) => {
   try {
     const { collectionName } = req.params;
-    //   const { name, jobs } = req.body;
+    const { TaskName, TaskDescription, Type, status } = req.body;
+    console.log(req.body);
+
+    //Format data structure
+    let workersData = {
+      data: {
+        TaskName: TaskName,
+        TaskDescription: TaskDescription,
+      },
+      Type: Type,
+      status: status,
+    };
 
     const WorkerModel = createWorkerModel(collectionName);
-    await WorkerModel.deleteMany();
-    await WorkerModel.insertMany(workers);
+
+    await WorkerModel.insertMany(workersData);
 
     res.status(201).json({ message: "Worker added successfully" });
   } catch (error) {

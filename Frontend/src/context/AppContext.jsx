@@ -65,6 +65,7 @@ const AppHandler = ({ children }) => {
         fetchStatuses,
         setEmptyData,
         status,
+        setStatus,
         emptyData,
         fetchDataByStatus,
         statusData,
