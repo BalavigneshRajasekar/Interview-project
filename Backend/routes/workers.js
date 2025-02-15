@@ -65,7 +65,7 @@ app.get("/get-statusCounts/:collectionName", async (req, res) => {
     const WorkerModel = createWorkerModel(collectionName);
     const statusCounts = await WorkerModel.aggregate([
       { $group: { _id: "$status", count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
+      { $sort: { count: -1, _id: 1 } },
     ]);
 
     res.json({ statusCounts });
@@ -79,23 +79,6 @@ app.get("/get-collections", async (req, res) => {
   try {
     const collections = config.Collections;
     res.json(collections);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// API to get particular workers form particular collection
-app.get("/get-worker/:collectionName/:workerId", async (req, res) => {
-  try {
-    const { collectionName, workerId } = req.params;
-    const WorkerModel = createWorkerModel(collectionName);
-
-    const worker = await WorkerModel.findById(workerId);
-    if (!worker) {
-      return res.status(404).json({ message: "Worker not found" });
-    }
-
-    res.status(200).json({ worker });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -119,27 +102,19 @@ app.get("/get-jobs/:collectionName", async (req, res) => {
   }
 });
 
-//endpoint to get particular works job status filter
-app.get("/get-job/:collectionName/:workerId", async (req, res) => {
-  const { status } = req.query;
-  console.log(status);
+// API to delete single and multiple  Jobs in collections
 
+app.delete("/delete-jobs/:collectionName", async (req, res) => {
   try {
-    const { collectionName, workerId } = req.params;
+    const { collectionName } = req.params;
+    const { ids } = req.body; // Get delete data
+    const deleteIds = ids.map((value) => value._id); //extract id from the array
+    console.log(deleteIds);
+
     const WorkerModel = createWorkerModel(collectionName);
 
-    const worker = await WorkerModel.findById(workerId);
-    if (!worker) {
-      return res.status(404).json({ message: "Worker not found" });
-    }
-
-    const job = worker.job.filter((j) => j.status === status);
-
-    if (!job) {
-      return res.status(404).json({ message: "Job not found for this worker" });
-    }
-
-    res.status(200).json({ job });
+    await WorkerModel.deleteMany({ _id: { $in: deleteIds } });
+    res.status(200).json({ message: "Jobs deleted successfully" }); // Return success message
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

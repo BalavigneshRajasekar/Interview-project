@@ -39,6 +39,24 @@ function IndividualStatus() {
     saveAs(dataBlob, `${collections}_${status}.json`);
   };
 
+  //Delete Jobs
+  const deleteJobs = async () => {
+    console.log("executed");
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/w1/delete-jobs/${collections}`,
+        {
+          data: { ids: selectedRows },
+        }
+      );
+      console.log(response);
+      fetchDataByStatus(collections, status);
+    } catch (e) {
+      console.log("Error deleting jobs", e);
+    }
+  };
+
   return (
     <div>
       <Button onClick={() => navigate(`/${collections}`)}>Go Back</Button>
@@ -54,7 +72,13 @@ function IndividualStatus() {
           >
             Dump JSON
           </Button>
-          <Button color="danger" variant="filled" icon={<MdAutoDelete />}>
+          <Button
+            color="danger"
+            variant="filled"
+            icon={<MdAutoDelete />}
+            disabled={selectedRows.length == 0}
+            onClick={() => deleteJobs()}
+          >
             Remove
           </Button>
         </div>
@@ -83,7 +107,7 @@ function IndividualStatus() {
                   <tr
                     onClick={() =>
                       setFullDetails((prev) => {
-                        return prev ? null : row;
+                        return prev ? (prev._id == row._id ? null : row) : row;
                       })
                     }
                     key={row.id}
@@ -120,7 +144,9 @@ function IndividualStatus() {
               ))}
             </tbody>
           ) : (
-            <p>No Data</p>
+            <td colSpan={3} className="text-center">
+              No Data
+            </td>
           )}
         </table>
       </div>
