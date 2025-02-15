@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
@@ -7,17 +8,26 @@ import { Button } from "antd";
 import { saveAs } from "file-saver";
 import { FaCloudDownloadAlt } from "react-icons/fa";
 import { MdAutoDelete } from "react-icons/md";
+import { IoIosArrowDroprightCircle } from "react-icons/io";
+import { IoIosArrowDropleftCircle } from "react-icons/io";
 
 function IndividualStatus() {
   const { status, collections } = useParams();
   const navigate = useNavigate();
   const [fullDetails, setFullDetails] = useState(null);
-  const { fetchDataByStatus, statusData } = useContext(AppContext);
+  const {
+    fetchDataByStatus,
+    statusData,
+    totalPage,
+    currentPage,
+    setCurrentPage,
+  } = useContext(AppContext);
   const [selectedRows, setSelectedRows] = useState([]); // holds the selected rows
 
   useEffect(() => {
     fetchDataByStatus(collections, status);
-  }, []);
+    console.log(totalPage);
+  }, [currentPage]);
 
   //Onchange the data when clicked check box
   const toggleRow = (row) => {
@@ -58,8 +68,10 @@ function IndividualStatus() {
   };
 
   return (
-    <div>
-      <Button onClick={() => navigate(`/${collections}`)}>Go Back</Button>
+    <div className="p-5">
+      <Button className="" onClick={() => navigate(`/${collections}`)}>
+        Go Back
+      </Button>
       <div className="flex justify-around mt-10">
         <h2 className="text-2xl font-bold text-center">Status: {status}</h2>
         <div className="flex gap-3">
@@ -80,6 +92,24 @@ function IndividualStatus() {
             onClick={() => deleteJobs()}
           >
             Remove
+          </Button>
+          <Button
+            icon={<IoIosArrowDropleftCircle />}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+            disabled={currentPage == 1}
+          >
+            Prev
+          </Button>
+          <span>
+            {currentPage}/{totalPage}
+          </span>
+          <Button
+            iconPosition="end"
+            icon={<IoIosArrowDroprightCircle />}
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            disabled={currentPage == totalPage}
+          >
+            Next
           </Button>
         </div>
       </div>

@@ -99,15 +99,30 @@ app.get("/get-collections", async (req, res) => {
 app.get("/get-jobs/:collectionName", async (req, res) => {
   try {
     const { collectionName } = req.params;
-    const { statusName } = req.query; // Get status from query params
+    const { statusName, pageNo, limit } = req.query; // Get status from query params
+
+    //Convert to number
+    let page = parseInt(pageNo);
+    let dataPerPage = parseInt(limit);
+    let skip = (page - 1) * dataPerPage;
 
     const WorkerModel = createWorkerModel(collectionName);
-
-    const jobs = await WorkerModel.aggregate([
+    const totalData = await WorkerModel.aggregate([
       { $match: { status: statusName } }, // Match only jobs with the requested status
+      {
+        $facet: {
+          // Create two data
+          metaData: [{ $count: "total" }], // Total document in the status
+          data: [{ $skip: skip }, { $limit: dataPerPage }], // date per page
+        },
+      },
     ]);
+    const totalDocument = totalData[0]?.metaData[0].total;
+    const jobs = totalData[0]?.data;
 
-    res.status(200).json({ jobs }); // Return job array
+    const totalPage = Math.ceil(totalDocument / dataPerPage);
+
+    res.status(200).json({ jobs, totalPage }); // Return job array
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

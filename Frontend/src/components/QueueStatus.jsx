@@ -6,7 +6,6 @@ import { Badge, Button, Empty, message } from "antd";
 import { FaRegPlusSquare } from "react-icons/fa";
 import FormModel from "./FormModel";
 import axios from "axios";
-const [messageApi, contextHolder] = message.useMessage();
 
 function QueueStatus() {
   const { collections } = useParams();
