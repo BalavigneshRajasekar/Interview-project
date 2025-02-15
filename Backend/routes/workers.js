@@ -46,7 +46,8 @@ app.post("/add-worker/:collectionName", async (req, res) => {
   try {
     const { collectionName } = req.params;
     const { TaskName, TaskDescription, Type, status } = req.body;
-    console.log(req.body);
+
+    console.log(req.body.length);
 
     //Format data structure
     let workersData = {
@@ -57,10 +58,16 @@ app.post("/add-worker/:collectionName", async (req, res) => {
       Type: Type,
       status: status,
     };
-
+    console.log(typeof workersData);
     const WorkerModel = createWorkerModel(collectionName);
 
-    await WorkerModel.insertMany(workersData);
+    if (req.body.length == undefined) {
+      //Insert Single Data
+      await WorkerModel.insertMany(workersData);
+    } else {
+      // Insert Multiple Data
+      await WorkerModel.insertMany(req.body);
+    }
 
     res.status(201).json({ message: "Worker added successfully" });
   } catch (error) {
@@ -117,7 +124,10 @@ app.get("/get-jobs/:collectionName", async (req, res) => {
         },
       },
     ]);
-    const totalDocument = totalData[0]?.metaData[0].total;
+    console.log(totalData);
+
+    const totalDocument = totalData[0]?.metaData[0]?.total || 0;
+
     const jobs = totalData[0]?.data;
 
     const totalPage = Math.ceil(totalDocument / dataPerPage);

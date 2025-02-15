@@ -15,19 +15,29 @@ function IndividualStatus() {
   const { status, collections } = useParams();
   const navigate = useNavigate();
   const [fullDetails, setFullDetails] = useState(null);
-  const {
-    fetchDataByStatus,
-    statusData,
-    totalPage,
-    currentPage,
-    setCurrentPage,
-  } = useContext(AppContext);
+  const { fetchDataByStatus, statusData, setStatusData } =
+    useContext(AppContext);
   const [selectedRows, setSelectedRows] = useState([]); // holds the selected rows
 
+  //Page nation details
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+
   useEffect(() => {
-    fetchDataByStatus(collections, status);
-    console.log(totalPage);
-  }, [currentPage]);
+    //Check when currentPage greater then total page
+    if (currentPage > totalPage) {
+      setCurrentPage(1);
+    }
+    fetchDataByStatus(collections, status, currentPage, setTotalPage);
+
+    return () => {
+      // Add cleanup code here
+
+      console.log("clean");
+
+      setStatusData([]);
+    };
+  }, [currentPage, totalPage]);
 
   //Onchange the data when clicked check box
   const toggleRow = (row) => {
@@ -61,7 +71,8 @@ function IndividualStatus() {
         }
       );
       console.log(response);
-      fetchDataByStatus(collections, status);
+      setSelectedRows([]);
+      fetchDataByStatus(collections, status, currentPage, setTotalPage);
     } catch (e) {
       console.log("Error deleting jobs", e);
     }

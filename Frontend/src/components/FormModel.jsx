@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { Button, Form, Input, Modal, Select } from "antd";
+import { Button, Divider, Form, Input, Modal, Select, Upload } from "antd";
 import React from "react";
 
 function FormModel({ open, onSubmit, setOpen }) {
   return (
     <div>
       <Modal open={open} footer={null} onCancel={() => setOpen(false)}>
+        <Divider variant="dashed">Upload By DUMP OR Manual</Divider>
         <Form onFinish={onSubmit}>
           <label>TaskName</label>
           <Form.Item

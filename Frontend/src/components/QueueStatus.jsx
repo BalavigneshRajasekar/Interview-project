@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { AppContext } from "../context/AppContext";
-import { Badge, Button, Empty, message } from "antd";
+import { Badge, Button, Empty, message, Upload } from "antd";
 import { FaRegPlusSquare } from "react-icons/fa";
 import FormModel from "./FormModel";
 import axios from "axios";
@@ -10,6 +10,7 @@ import axios from "axios";
 function QueueStatus() {
   const { collections } = useParams();
   const [open, setOpen] = useState(); // to open Form model to add new job
+  const [file, setFile] = useState();
   const navigate = useNavigate();
   const { fetchStatuses, status, setStatus, emptyData, setEmptyData } =
     useContext(AppContext);
@@ -44,7 +45,31 @@ function QueueStatus() {
       console.error("Error occurred while adding new task", e);
     }
   };
+  //Add Json to State
+  const handleUploadJson = (e) => {
+    setFile(e.target.files[0]);
+  };
 
+  // Upload the JSON file to DB
+  const handleUpload = async () => {
+    if (!file) {
+      alert("Please select a file first.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = async (event) => {
+      try {
+        const jsonData = JSON.parse(event.target.result); // Parse JSON
+        await onSubmit(jsonData);
+      } catch (error) {
+        console.error("Error uploading JSON:", error);
+      }
+    };
+
+    // Read the file as text
+  };
   return (
     <div>
       <h1 className="text-center bg-green-600">{collections}</h1>
@@ -54,6 +79,15 @@ function QueueStatus() {
       <div className="flex justify-center">
         <Button icon={<FaRegPlusSquare />} onClick={() => setOpen(true)}>
           Add NewTask
+        </Button>
+        <input
+          className="border"
+          type="file"
+          accept=".json"
+          onChange={handleUploadJson}
+        ></input>
+        <Button onClick={handleUpload}>
+          <span>Upload Json</span>
         </Button>
       </div>
       <FormModel open={open} onSubmit={onSubmit} setOpen={setOpen}></FormModel>

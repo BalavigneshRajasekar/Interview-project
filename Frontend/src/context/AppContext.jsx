@@ -11,10 +11,6 @@ const AppHandler = ({ children }) => {
   const [status, setStatus] = useState([]); // status name and the count
   const [statusData, setStatusData] = useState([]); // particular status data
 
-  //Page nation details
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
-
   useEffect(() => {
     fetchCollections();
   }, []);
@@ -46,7 +42,12 @@ const AppHandler = ({ children }) => {
   };
 
   // Get data based on status
-  const fetchDataByStatus = async (collections, statusName) => {
+  const fetchDataByStatus = async (
+    collections,
+    statusName,
+    currentPage,
+    setTotalPage
+  ) => {
     console.log(statusName, collections);
 
     try {
@@ -56,9 +57,9 @@ const AppHandler = ({ children }) => {
           params: { statusName, pageNo: currentPage, limit: 10 },
         }
       );
+      setStatusData(response.data.jobs);
       setTotalPage(response.data.totalPage);
       console.log(response);
-      setStatusData(response.data.jobs);
     } catch (e) {
       console.error("Failed to fetch data", e);
     }
@@ -74,9 +75,7 @@ const AppHandler = ({ children }) => {
         emptyData,
         fetchDataByStatus,
         statusData,
-        totalPage,
-        currentPage,
-        setCurrentPage,
+        setStatusData,
       }}
     >
       {children}
