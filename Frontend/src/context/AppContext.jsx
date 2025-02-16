@@ -27,6 +27,7 @@ const AppHandler = ({ children }) => {
   };
   // Get all status by Count
   const fetchStatuses = async (collectionName) => {
+    setEmptyData(false);
     try {
       const response = await axios.get(
         `http://localhost:3000/api/w1/get-statusCounts/${collectionName}`

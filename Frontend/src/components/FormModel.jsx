@@ -7,7 +7,7 @@ function FormModel({ open, onSubmit, setOpen }) {
   return (
     <div>
       <Modal open={open} footer={null} onCancel={() => setOpen(false)}>
-        <Divider variant="dashed">Upload By DUMP OR Manual</Divider>
+        <Divider variant="dashed">Add individual Job</Divider>
         <Form onFinish={onSubmit}>
           <label>TaskName</label>
           <Form.Item

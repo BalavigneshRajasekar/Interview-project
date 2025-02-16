@@ -26,6 +26,7 @@ function QueueStatus() {
       setStatus([]);
     };
   }, []);
+
   const handleChange = (id) => {
     navigate(`/${collections}/${id}`); // Navigate to workers page with selected status
   };
@@ -38,7 +39,8 @@ function QueueStatus() {
         `http://localhost:3000/api/w1/add-worker/${collections}`,
         values
       );
-      message.success("Added");
+      console.log("added");
+
       fetchStatuses(collections); // Fetch the statuses once again when new task added
       console.log(response);
     } catch (e) {

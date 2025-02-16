@@ -48,7 +48,6 @@ function IndividualStatus() {
   };
   // Checked Un checked
   const isRowSelected = (row) => selectedRows.some((r) => r._id === row._id);
-  console.log(selectedRows);
 
   //Download the Json File
   const download = () => {
