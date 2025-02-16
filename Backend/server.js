@@ -2,9 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const connectDb = require("./db");
 require("dotenv").config();
-const bodyParser = require("body-parser");
 
-const config = require("./config.json");
 const app = express();
 
 //Middlewares
@@ -22,8 +20,8 @@ const workerRouter = require("./routes/workers");
 app.use("/api/w1", workerRouter);
 
 // Server Start up
-// app.listen(3000, () => {
-//   console.log("Server is running on port 3000");
-// });
+app.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
 
 module.exports = app;

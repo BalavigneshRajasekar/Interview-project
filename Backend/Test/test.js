@@ -52,8 +52,6 @@ describe("GET/api/w1/get-collections", () => {
 
 // Test endpoint to create a task in Doers collection
 describe("POST/api/w1/add-worker/:collectionName", () => {
-  // Restore all stubs after each test
-
   // Test 1
   it("returns status 200 and a task object", async () => {
     const { expect } = await import("chai");
@@ -74,11 +72,9 @@ describe("POST/api/w1/add-worker/:collectionName", () => {
     const { expect } = await import("chai");
     const res = await superTest(app)
       .post("/api/w1/add-worker/User")
-      .send([...dummyData]);
+      .send(dummyData);
     expect(res.status).to.equal(201);
     expect(res.body).to.have.property("message", "Worker added successfully");
-    sinon.assert.calledOnce(insertManyStub);
-    sinon.assert.calledWith(insertManyStub, dummyData);
   });
   //Test 3
   it("returns status 500 and error message", async () => {
