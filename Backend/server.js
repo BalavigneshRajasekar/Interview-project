@@ -21,7 +21,9 @@ const workerRouter = require("./routes/workers");
 //endpoints routes
 app.use("/api/w1", workerRouter);
 
-//Server Start up
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+// Server Start up
+// app.listen(3000, () => {
+//   console.log("Server is running on port 3000");
+// });
+
+module.exports = app;

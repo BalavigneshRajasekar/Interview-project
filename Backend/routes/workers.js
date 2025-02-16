@@ -1,5 +1,5 @@
 const express = require("express");
-const createWorkerModel = require("../models/DynamicWorker");
+const { createWorkerModel } = require("../models/DynamicWorker");
 const config = require("../config.json");
 const mongoose = require("mongoose");
 const app = express();
@@ -19,7 +19,6 @@ app.post("/add-worker/:collectionName", async (req, res) => {
       Type: Type,
       status: status,
     };
-    console.log(typeof workersData);
     const WorkerModel = createWorkerModel(collectionName);
 
     if (req.body.length == undefined) {
@@ -27,6 +26,8 @@ app.post("/add-worker/:collectionName", async (req, res) => {
       await WorkerModel.insertOne(workersData);
     } else {
       // Insert Multiple Data
+      console.log(req.body);
+
       await WorkerModel.insertMany(req.body);
     }
 
@@ -39,7 +40,7 @@ app.post("/add-worker/:collectionName", async (req, res) => {
 // API to get status count from specific collection
 app.get("/get-statusCounts/:collectionName", async (req, res) => {
   const { collectionName } = req.params;
-  // const { page, limit } = req.query;
+
   try {
     const WorkerModel = createWorkerModel(collectionName);
     const statusCounts = await WorkerModel.aggregate([
@@ -57,7 +58,10 @@ app.get("/get-statusCounts/:collectionName", async (req, res) => {
 app.get("/get-collections", async (req, res) => {
   try {
     const collections = config.Collections;
-    res.json(collections);
+    if (collections == undefined) {
+      throw new Error("Collections not found in config.json");
+    }
+    res.status(200).json(collections);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -68,7 +72,9 @@ app.get("/get-jobs/:collectionName", async (req, res) => {
   try {
     const { collectionName } = req.params;
     const { statusName, pageNo, limit } = req.query; // Get status from query params
-
+    if (!pageNo || !limit) {
+      res.status(404).json({ error: "page number and limit are required" });
+    }
     //Convert to number
     let page = parseInt(pageNo);
     let dataPerPage = parseInt(limit);
@@ -85,7 +91,6 @@ app.get("/get-jobs/:collectionName", async (req, res) => {
         },
       },
     ]);
-    console.log(totalData);
 
     const totalDocument = totalData[0]?.metaData[0]?.total || 0;
 
@@ -105,8 +110,7 @@ app.delete("/delete-jobs/:collectionName", async (req, res) => {
   try {
     const { collectionName } = req.params;
     const { ids } = req.body; // Get delete data
-    const deleteIds = ids.map((value) => value._id); //extract id from the array
-    console.log(deleteIds);
+    const deleteIds = ids.map((value) => value._id); //extract id from the array of object
 
     const WorkerModel = createWorkerModel(collectionName);
 
