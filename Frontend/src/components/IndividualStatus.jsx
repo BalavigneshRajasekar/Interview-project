@@ -21,20 +21,19 @@ function IndividualStatus() {
 
   //Page nation details
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(1);
 
   useEffect(() => {
     //Check when currentPage greater then total page
     if (currentPage > totalPage) {
-      setCurrentPage(1);
+      setCurrentPage(totalPage);
     }
+
+    //Initially load the content for page
     fetchDataByStatus(collections, status, currentPage, setTotalPage);
 
     return () => {
       // Add cleanup code here
-
-      console.log("clean");
-
       setStatusData([]);
     };
   }, [currentPage, totalPage]);

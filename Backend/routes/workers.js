@@ -4,50 +4,11 @@ const config = require("../config.json");
 const mongoose = require("mongoose");
 const app = express();
 
-//dummy workers
-const workers = [
-  {
-    data: { nams: "transactions" },
-    Type: "Transaction",
-    status: "active",
-    time: Date.now(),
-  },
-  {
-    data: { nams: "money" },
-    Type: "Transaction",
-    status: "completed",
-    time: Date.now(),
-  },
-  {
-    data: { nams: "outstanding" },
-    Type: "Transaction",
-    status: "failed",
-    time: Date.now(),
-  },
-  { data: { nams: "pending amount" }, Type: "Transaction", time: Date.now() },
-  { data: { nams: "profit amount" }, Type: "Transaction", time: Date.now() },
-  { data: { nams: "loss amount" }, Type: "Transaction", time: Date.now() },
-  {
-    data: { nams: "tax amount" },
-    Type: "Transaction",
-    status: "active",
-    time: Date.now(),
-  },
-  {
-    data: { nams: "invest" },
-    Type: "Transaction",
-    status: "active",
-    time: Date.now(),
-  },
-];
-
 // API to create a task in Doers collection
 app.post("/add-worker/:collectionName", async (req, res) => {
   try {
     const { collectionName } = req.params;
     const { TaskName, TaskDescription, Type, status } = req.body;
-
-    console.log(req.body.length);
 
     //Format data structure
     let workersData = {
@@ -63,7 +24,7 @@ app.post("/add-worker/:collectionName", async (req, res) => {
 
     if (req.body.length == undefined) {
       //Insert Single Data
-      await WorkerModel.insertMany(workersData);
+      await WorkerModel.insertOne(workersData);
     } else {
       // Insert Multiple Data
       await WorkerModel.insertMany(req.body);

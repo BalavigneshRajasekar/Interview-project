@@ -78,9 +78,9 @@ function QueueStatus() {
       <Button className="mt-5" onClick={() => navigate("/")}>
         Go back
       </Button>
-      <div className="flex justify-center">
+      <div className="flex justify-center gap-3">
         <Button icon={<FaRegPlusSquare />} onClick={() => setOpen(true)}>
-          Add NewTask
+          Add Single Task
         </Button>
         <input
           className="border"
@@ -88,7 +88,7 @@ function QueueStatus() {
           accept=".json"
           onChange={handleUploadJson}
         ></input>
-        <Button onClick={handleUpload}>
+        <Button onClick={handleUpload} variant="solid" color="default">
           <span>Upload Json</span>
         </Button>
       </div>
